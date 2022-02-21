@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<Head>
+		<link rel="stylesheet" href="main.css"/>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+		<Title> My first Leaflet map </Title>
+	</Head>
+	
+	<Body>
+		<H1> Wageningen WebMap - Jil van Etten </H1>
+		<div id="map"></div>
+		<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-hash/0.2.1/leaflet-hash.js"></script> //hash plugin
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script> //change projection
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.js"></script> //change projection
+		<script>
+			const RDnew = new L.Proj.CRS('EPSG:28992', '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
+				{
+					transformation: L.Transformation(-1, -1, 0, 0),
+					resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420],
+					origin: [-285401.920, 903401.920],
+					bounds: L.bounds([-285401.920, 903401.920], [595401.920, 22598.080])
+				}
+			); //add the projection RDnew
+			
+			const map = L.map('map', {
+				crs: RDnew,
+				zoom: 9, //Zoom scale RD new
+				center: [51.9741, 5.6688] //webmercator coordinates
+			}); //Initialising the map, RDnew 
+			
+			const hash = new L.Hash(map); //add the hash plugin
+			
+			//Create baselayer - tiles
+			const pdokachtergrondkaart = new L.TileLayer('https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/standaard/EPSG:28992/{z}/{x}/{y}.png', {
+				minZoom: 0,
+				maxZoom: 13,
+				attribution: 'Kaartgegevens: © <a href="http://www.cbs.nl">CBS</a>, <a href="http://www.kadaster.nl">Kadaster</a>, <a href="http://openstreetmap.org">OpenStreetMap</a><span class="printhide">-auteurs (<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>).</span>'
+			});
+
+			pdokachtergrondkaart.addTo(map);
+			
+			let marker = L.marker([51.98514, 5.66647]).addTo(map); //add a point marker (orion)
+			let forum = L.marker([51.98531, 5.66361]).addTo(map); //forum marker
+			let duivendaal = L.marker([51.9671808,5.6585494]).addTo(map); //duivendaal marker
+			let grotekerk = L.marker([51.96485,5.66245]).addTo(map); //grote kerk marker
+			
+			let popup1 = "Forum - campus building of Wageningen University"; //define a popup
+			forum.bindPopup(popup1); // link the popup to the right marker
+			let popup2 = "Orion - campus building of Wageningen Univeristy";
+			marker.bindPopup(popup2);
+			let popup3 = "Duivendaal - student housing";
+			duivendaal.bindPopup(popup3);
+			let popup4 = "Grote kerk";
+			grotekerk.bindPopup(popup4);
+			
+			let circle =  L.circle([51.98531, 5.66361], 300, { 
+			  color: 'yellow',
+			  fillColor: 'yellow',
+			  fillOpacity: 0.2
+			}).addTo(map); //add a cicle to the map
+			
+			let polygon = L.polygon(
+				[[
+					[51.98531, 5.66361],
+					[51.98514, 5.66647],
+					[51.96485,5.66245],
+					[51.9671808,5.6585494]
+				]]).addTo(map); //add a polygon connecting these points (the markers)
+			
+		</script>
+		
+	</Body>
+</html>
